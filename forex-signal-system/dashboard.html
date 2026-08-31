@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forex Signal Board</title>
+<style>
+  :root{
+    --bg: #0B1220;
+    --panel: #121B2E;
+    --panel-line: #223252;
+    --text: #E7ECF5;
+    --text-dim: #8494B0;
+    --buy: #2FD3A6;
+    --sell: #F2734A;
+    --hold: #5B6B8C;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 500px at 15% -10%, rgba(47,211,166,0.08), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    padding:32px 20px 80px;
+  }
+  header{
+    max-width:1100px;
+    margin:0 auto 28px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+    border-bottom:1px solid var(--panel-line);
+    padding-bottom:20px;
+  }
+  h1{
+    font-size:26px;
+    margin:0 0 6px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:14px;
+    max-width:520px;
+  }
+  #meta{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-dim);
+    text-align:right;
+  }
+  #meta span{color:var(--text);}
+  .disclaimer{
+    max-width:1100px;
+    margin:0 auto 24px;
+    background:rgba(242,115,74,0.08);
+    border:1px solid rgba(242,115,74,0.35);
+    color:#F2B79A;
+    font-size:13px;
+    padding:12px 16px;
+    border-radius:6px;
+  }
+  .grid{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:8px;
+    padding:18px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+  }
+  .card.buy::before{background:var(--buy);}
+  .card.sell::before{background:var(--sell);}
+  .card.hold::before{background:var(--hold);}
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .pair{
+    font-family:var(--mono);
+    font-size:17px;
+    font-weight:600;
+  }
+  .badge{
+    font-family:var(--mono);
+    font-size:12px;
+    padding:3px 9px;
+    border-radius:20px;
+    font-weight:600;
+  }
+  .badge.buy{background:rgba(47,211,166,0.15); color:var(--buy);}
+  .badge.sell{background:rgba(242,115,74,0.15); color:var(--sell);}
+  .badge.hold{background:rgba(91,107,140,0.2); color:#AEB9CF;}
+  .price{
+    font-family:var(--mono);
+    font-size:22px;
+    margin:2px 0 12px;
+  }
+  .metrics{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-dim);
+    border-top:1px solid var(--panel-line);
+    padding-top:10px;
+    margin-bottom:10px;
+  }
+  .metrics div b{display:block; color:var(--text); font-size:13px; font-weight:500;}
+  .confidence-bar{
+    height:4px;
+    background:var(--panel-line);
+    border-radius:2px;
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  .confidence-fill{height:100%;}
+  .card.buy .confidence-fill{background:var(--buy);}
+  .card.sell .confidence-fill{background:var(--sell);}
+  .card.hold .confidence-fill{background:var(--hold);}
+  .reasons{
+    font-size:12.5px;
+    color:var(--text-dim);
+    line-height:1.6;
+    margin:0;
+    padding-left:16px;
+  }
+  .empty, .error{
+    max-width:1100px;
+    margin:60px auto;
+    text-align:center;
+    color:var(--text-dim);
+    font-size:14px;
+  }
+  .error{color:var(--sell);}
+  code{
+    background:rgba(255,255,255,0.06);
+    padding:1px 6px;
+    border-radius:4px;
+    font-family:var(--mono);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Forex Signal Board</h1>
+    <p>สัญญาณจากอินดิเคเตอร์ทางเทคนิค (EMA, RSI, MACD, Bollinger) อัปเดตอัตโนมัติจาก signals.json</p>
+  </div>
+  <div id="meta">อัปเดตล่าสุด: <span id="ts">–</span></div>
+</header>
+
+<div class="disclaimer">
+  ⚠️ นี่คือสัญญาณเชิงเทคนิคที่คำนวณจากข้อมูลราคาย้อนหลัง ไม่ใช่คำทำนายราคาและไม่ใช่คำแนะนำการลงทุน
+  ควรใช้ประกอบการตัดสินใจร่วมกับปัจจัยอื่น และบริหารความเสี่ยงของตัวเองเสมอ
+</div>
+
+<div id="content" class="grid"></div>
+
+<script>
+const REFRESH_MS = 15000;
+
+function badgeClass(signal){
+  if(signal === "BUY") return "buy";
+  if(signal === "SELL") return "sell";
+  return "hold";
+}
+
+function render(data){
+  const content = document.getElementById("content");
+  const tsEl = document.getElementById("ts");
+  tsEl.textContent = new Date(data.generated_at).toLocaleString("th-TH");
+
+  const pairs = Object.entries(data.signals || {});
+  if(pairs.length === 0){
+    content.innerHTML = '<div class="empty">ยังไม่มีข้อมูลสัญญาณ — รอ forex_signals.py รันรอบแรก</div>';
+    return;
+  }
+
+  content.innerHTML = pairs.map(([pair, s]) => {
+    const cls = badgeClass(s.signal);
+    const confPct = Math.round((s.confidence || 0) * 100);
+    return `
+      <div class="card ${cls}">
+        <div class="card-top">
+          <span class="pair">${pair}</span>
+          <span class="badge ${cls}">${s.signal}</span>
+        </div>
+        <div class="price">${s.price}</div>
+        <div class="confidence-bar"><div class="confidence-fill" style="width:${confPct}%"></div></div>
+        <div class="metrics">
+          <div>RSI(14)<b>${s.rsi14 ?? "–"}</b></div>
+          <div>EMA9/21<b>${s.ema9 ?? "–"} / ${s.ema21 ?? "–"}</b></div>
+          <div>ความมั่นใจ<b>${confPct}%</b></div>
+        </div>
+        <ul class="reasons">
+          ${(s.reasons || []).map(r => `<li>${r}</li>`).join("")}
+        </ul>
+      </div>
+    `;
+  }).join("");
+}
+
+async function load(){
+  try{
+    const res = await fetch("signals.json?_=" + Date.now());
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    render(data);
+  }catch(e){
+    document.getElementById("content").innerHTML =
+      `<div class="error">โหลด signals.json ไม่สำเร็จ (${e.message}).<br>
+       ตรวจสอบว่ารัน <code>python forex_signals.py</code> อยู่ และเปิดหน้านี้ผ่าน
+       <code>python -m http.server</code> ในโฟลเดอร์เดียวกัน (ไม่ใช่เปิดไฟล์ตรงๆ)</div>`;
+  }
+}
+
+load();
+setInterval(load, REFRESH_MS);
+</script>
+
+</body>
+</html>
