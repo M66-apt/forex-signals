@@ -15,30 +15,43 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
   :root{
-    --bg: #0B1220;
-    --panel: #121B2E;
-    --panel-line: #223252;
-    --text: #E7ECF5;
-    --text-dim: #8494B0;
-    --buy: #2FD3A6;
-    --sell: #F2734A;
-    --hold: #5B6B8C;
-    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --bg-a: #FFF3E9;
+    --bg-b: #F1EBFF;
+    --bg-c: #E8FBF3;
+    --panel: #FFFFFF;
+    --panel-line: #F1E7FB;
+    --text: #3B2E58;
+    --text-dim: #8A7FAE;
+    --buy: #22C58B;
+    --buy-soft: #E4FBF1;
+    --sell: #FF5D7A;
+    --sell-soft: #FFE9EE;
+    --hold: #9C8FC7;
+    --hold-soft: #F1EDFB;
+    --accent: #FFC94A;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --sans: "Nunito", "Segoe UI", system-ui, sans-serif;
+    --display: "Baloo 2", var(--sans);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
     margin:0;
     background:
-      radial-gradient(1200px 500px at 15% -10%, rgba(47,211,166,0.08), transparent),
-      var(--bg);
+      radial-gradient(900px 500px at 8% -8%, var(--bg-c), transparent),
+      radial-gradient(900px 500px at 100% 0%, var(--bg-b), transparent),
+      var(--bg-a);
     color:var(--text);
     font-family:var(--sans);
+    font-weight:600;
     padding:20px 16px calc(90px + env(safe-area-inset-bottom));
   }
   header{
@@ -49,115 +62,127 @@
     align-items:flex-end;
     flex-wrap:wrap;
     gap:12px;
-    border-bottom:1px solid var(--panel-line);
     padding-bottom:16px;
   }
-  h1{ font-size:22px; margin:0 0 4px; font-weight:600; letter-spacing:-0.01em; }
-  header p{ margin:0; color:var(--text-dim); font-size:13px; max-width:480px; }
-  #meta{ font-family:var(--mono); font-size:11px; color:var(--text-dim); text-align:right; }
-  #meta span{color:var(--text);}
+  h1{ font-family:var(--display); font-size:26px; margin:0 0 4px; font-weight:800; color:#5B3E8F; }
+  header p{ margin:0; color:var(--text-dim); font-size:13px; font-weight:600; max-width:480px; }
+  #meta{ font-family:var(--mono); font-size:11px; color:var(--text-dim); text-align:right; font-weight:600; }
+  #meta span{color:var(--text); font-weight:700;}
 
   .toolbar{
-    max-width:1100px; margin:0 auto 16px;
+    max-width:1100px; margin:0 auto 14px;
     display:flex; gap:10px; align-items:center; flex-wrap:wrap;
   }
   .live-toggle{
     display:flex; align-items:center; gap:8px;
-    background:var(--panel); border:1px solid var(--panel-line);
-    border-radius:20px; padding:6px 14px 6px 6px; font-size:13px; cursor:pointer;
-    user-select:none;
+    background:var(--panel); border:2px solid var(--panel-line);
+    border-radius:20px; padding:7px 16px 7px 8px; font-size:13px; font-weight:700; cursor:pointer;
+    user-select:none; box-shadow:0 3px 0 var(--panel-line);
   }
   .live-dot{ width:9px; height:9px; border-radius:50%; background:var(--hold); transition:background .2s; }
   .live-toggle.on .live-dot{ background:var(--buy); box-shadow:0 0 8px var(--buy); animation:pulse 1.4s infinite; }
   @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.4} }
-  .live-status{ font-family:var(--mono); font-size:11px; color:var(--text-dim); }
+  .live-status{ font-family:var(--mono); font-size:11px; color:var(--text-dim); font-weight:600; }
+
+  .range-picker{
+    display:flex; gap:6px; background:var(--panel); border:2px solid var(--panel-line);
+    border-radius:20px; padding:4px; box-shadow:0 3px 0 var(--panel-line);
+  }
+  .range-picker button{
+    border:none; background:transparent; color:var(--text-dim); font-family:var(--sans);
+    font-weight:700; font-size:12.5px; padding:6px 13px; border-radius:16px; cursor:pointer;
+  }
+  .range-picker button.active{ background:var(--accent); color:#5B3E00; }
 
   .disclaimer{
     max-width:1100px; margin:0 auto 20px;
-    background:rgba(242,115,74,0.08); border:1px solid rgba(242,115,74,0.35);
-    color:#F2B79A; font-size:12.5px; padding:11px 15px; border-radius:6px;
+    background:#FFF6DC; border:2px solid #FFE29A;
+    color:#8A6A00; font-size:12.5px; font-weight:700; padding:12px 16px; border-radius:14px;
   }
 
   .grid{
     max-width:1100px; margin:0 auto;
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px;
   }
   .card{
-    background:var(--panel); border:1px solid var(--panel-line); border-radius:8px;
-    padding:16px 18px; position:relative; overflow:hidden; cursor:pointer;
-    transition:border-color .15s;
+    background:var(--panel); border:2px solid var(--panel-line); border-radius:20px;
+    padding:18px 20px; position:relative; overflow:hidden; cursor:pointer;
+    box-shadow:0 6px 0 var(--panel-line);
+    transition:transform .1s;
   }
-  .card:active{ border-color:#3A4E76; }
-  .card::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; }
-  .card.buy::before{background:var(--buy);}
-  .card.sell::before{background:var(--sell);}
-  .card.hold::before{background:var(--hold);}
-  .card-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
-  .pair{ font-family:var(--mono); font-size:16px; font-weight:600; }
-  .badge{ font-family:var(--mono); font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600; }
-  .badge.buy{background:rgba(47,211,166,0.15); color:var(--buy);}
-  .badge.sell{background:rgba(242,115,74,0.15); color:var(--sell);}
-  .badge.hold{background:rgba(91,107,140,0.2); color:#AEB9CF;}
+  .card:active{ transform:translateY(3px); box-shadow:0 3px 0 var(--panel-line); }
+  .card.buy{ border-color:#C9F3E2; }
+  .card.sell{ border-color:#FFD3DC; }
+  .card.hold{ border-color:#E3DDF6; }
+  .card.buy{ box-shadow:0 6px 0 #C9F3E2; }
+  .card.sell{ box-shadow:0 6px 0 #FFD3DC; }
+  .card.hold{ box-shadow:0 6px 0 #E3DDF6; }
+  .card-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .pair{ font-family:var(--display); font-size:18px; font-weight:700; color:#5B3E8F; }
+  .badge{ font-family:var(--sans); font-size:12px; padding:5px 13px; border-radius:20px; font-weight:800; }
+  .badge.buy{background:var(--buy-soft); color:var(--buy);}
+  .badge.sell{background:var(--sell-soft); color:var(--sell);}
+  .badge.hold{background:var(--hold-soft); color:var(--hold);}
   .price-row{ display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
-  .price{ font-family:var(--mono); font-size:20px; transition:color .3s; }
+  .price{ font-family:var(--mono); font-size:22px; font-weight:700; transition:color .3s; }
   .price.flash-up{ color:var(--buy); }
   .price.flash-down{ color:var(--sell); }
-  .mini-chart{ height:64px; margin-bottom:10px; border-radius:4px; overflow:hidden; }
+  .mini-chart{ height:130px; margin-bottom:12px; border-radius:12px; overflow:hidden; background:#FCFAFF; }
   .metrics{
     display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;
-    font-family:var(--mono); font-size:11px; color:var(--text-dim);
-    border-top:1px solid var(--panel-line); padding-top:9px; margin-bottom:8px;
+    font-family:var(--mono); font-size:11px; color:var(--text-dim); font-weight:600;
+    border-top:2px dashed var(--panel-line); padding-top:10px; margin-bottom:8px;
   }
-  .metrics div b{display:block; color:var(--text); font-size:12.5px; font-weight:500;}
-  .confidence-bar{ height:4px; background:var(--panel-line); border-radius:2px; margin-bottom:8px; overflow:hidden; }
-  .confidence-fill{height:100%;}
+  .metrics div b{display:block; color:var(--text); font-size:13px; font-weight:700;}
+  .confidence-bar{ height:6px; background:var(--panel-line); border-radius:4px; margin-bottom:10px; overflow:hidden; }
+  .confidence-fill{height:100%; border-radius:4px;}
   .card.buy .confidence-fill{background:var(--buy);}
   .card.sell .confidence-fill{background:var(--sell);}
   .card.hold .confidence-fill{background:var(--hold);}
-  .reasons{ font-size:12px; color:var(--text-dim); line-height:1.55; margin:0; padding-left:15px; }
+  .reasons{ font-size:12.5px; color:var(--text-dim); font-weight:600; line-height:1.6; margin:0; padding-left:18px; }
 
-  .empty, .error{ max-width:1100px; margin:60px auto; text-align:center; color:var(--text-dim); font-size:14px; }
+  .empty, .error{ max-width:1100px; margin:60px auto; text-align:center; color:var(--text-dim); font-size:14px; font-weight:700; }
   .error{color:var(--sell);}
-  code{ background:rgba(255,255,255,0.06); padding:1px 6px; border-radius:4px; font-family:var(--mono); }
+  code{ background:var(--hold-soft); padding:2px 7px; border-radius:6px; font-family:var(--mono); }
 
   /* Modal with full chart */
   .modal-overlay{
-    display:none; position:fixed; inset:0; background:rgba(6,10,18,0.75);
+    display:none; position:fixed; inset:0; background:rgba(91,62,143,0.35);
     z-index:50; align-items:flex-end; justify-content:center;
   }
   .modal-overlay.open{ display:flex; }
   .modal{
-    background:var(--panel); border:1px solid var(--panel-line);
-    border-radius:14px 14px 0 0; width:100%; max-width:640px;
-    padding:18px 18px calc(20px + env(safe-area-inset-bottom));
+    background:var(--panel); border:2px solid var(--panel-line);
+    border-radius:26px 26px 0 0; width:100%; max-width:640px;
+    padding:20px 20px calc(22px + env(safe-area-inset-bottom));
     max-height:85vh; overflow-y:auto;
   }
-  .modal-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-  .modal-close{ background:none; border:none; color:var(--text-dim); font-size:22px; cursor:pointer; padding:4px 8px; }
-  .modal-chart{ height:260px; border-radius:6px; overflow:hidden; margin-bottom:14px; }
+  .modal-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .modal-close{ background:var(--hold-soft); border:none; color:var(--text-dim); font-size:18px; cursor:pointer; padding:6px 12px; border-radius:12px; font-weight:700; }
+  .modal-chart{ height:300px; border-radius:14px; overflow:hidden; margin-bottom:16px; background:#FCFAFF; }
 
   /* Live mode key input dialog */
   .key-dialog{
-    display:none; position:fixed; inset:0; background:rgba(6,10,18,0.8);
+    display:none; position:fixed; inset:0; background:rgba(91,62,143,0.4);
     z-index:60; align-items:center; justify-content:center; padding:20px;
   }
   .key-dialog.open{ display:flex; }
   .key-box{
-    background:var(--panel); border:1px solid var(--panel-line); border-radius:10px;
-    padding:22px; max-width:380px; width:100%;
+    background:var(--panel); border:2px solid var(--panel-line); border-radius:22px;
+    padding:24px; max-width:380px; width:100%;
   }
-  .key-box h3{ margin:0 0 8px; font-size:16px; }
-  .key-box p{ color:var(--text-dim); font-size:13px; line-height:1.5; margin:0 0 14px; }
+  .key-box h3{ font-family:var(--display); margin:0 0 8px; font-size:18px; color:#5B3E8F; }
+  .key-box p{ color:var(--text-dim); font-size:13px; font-weight:600; line-height:1.5; margin:0 0 14px; }
   .key-box input{
-    width:100%; background:#0D1524; border:1px solid var(--panel-line); border-radius:6px;
-    color:var(--text); padding:10px 12px; font-family:var(--mono); font-size:13px; margin-bottom:14px;
+    width:100%; background:#FCFAFF; border:2px solid var(--panel-line); border-radius:12px;
+    color:var(--text); padding:11px 13px; font-family:var(--mono); font-size:13px; margin-bottom:14px;
   }
   .key-box .btn-row{ display:flex; gap:10px; }
   .key-box button{
-    flex:1; padding:10px; border-radius:6px; border:1px solid var(--panel-line);
-    background:#0D1524; color:var(--text); font-size:13px; cursor:pointer;
+    flex:1; padding:11px; border-radius:12px; border:2px solid var(--panel-line);
+    background:#FCFAFF; color:var(--text); font-weight:700; font-size:13px; cursor:pointer;
   }
-  .key-box button.primary{ background:var(--buy); color:#062; border-color:var(--buy); font-weight:600; }
+  .key-box button.primary{ background:var(--buy); color:#fff; border-color:var(--buy); font-weight:800; }
 </style>
 </head>
 <body>
@@ -174,6 +199,11 @@
   <div class="live-toggle" id="liveToggle">
     <span class="live-dot"></span>
     <span id="liveLabel">โหมดปกติ (อัปเดตทุก ~15-30 นาที)</span>
+  </div>
+  <div class="range-picker" id="rangePicker">
+    <button data-range="24">6 ชม.</button>
+    <button data-range="48">12 ชม.</button>
+    <button data-range="0" class="active">ทั้งหมด</button>
   </div>
   <span class="live-status" id="liveStatus"></span>
 </div>
@@ -226,6 +256,7 @@ let latestData = null; // last full signals payload (from file or live)
 let miniCharts = {};   // pair -> lightweight-charts instance (mini card charts)
 let liveMode = false;
 let liveTimer = null;
+let rangeCandles = 0;  // 0 = show all saved candles; otherwise show only the last N
 
 // ---------------------------------------------------------------------
 // Rendering
@@ -237,23 +268,29 @@ function badgeClass(signal){
   return "hold";
 }
 
-function drawMiniChart(container, candles, signal){
+function visibleCandles(candles){
+  if(!candles) return [];
+  return rangeCandles > 0 ? candles.slice(-rangeCandles) : candles;
+}
+
+function drawMiniChart(container, candles){
   container.innerHTML = "";
-  if(!candles || candles.length < 2) return;
+  const shown = visibleCandles(candles);
+  if(shown.length < 2) return;
   const chart = LightweightCharts.createChart(container, {
-    width: container.clientWidth, height: 64,
-    layout:{ background:{color:"transparent"}, textColor:"#8494B0", fontSize:9 },
-    grid:{ vertLines:{visible:false}, horzLines:{visible:false} },
+    width: container.clientWidth, height: 130,
+    layout:{ background:{color:"transparent"}, textColor:"#B7ADD6", fontSize:10, fontFamily:"JetBrains Mono" },
+    grid:{ vertLines:{visible:false}, horzLines:{color:"#F1EBFB"} },
     rightPriceScale:{ visible:false },
     timeScale:{ visible:false },
     handleScroll:false, handleScale:false,
     crosshair:{ horzLine:{visible:false}, vertLine:{visible:false} },
   });
   const series = chart.addCandlestickSeries({
-    upColor:"#2FD3A6", downColor:"#F2734A", borderVisible:false,
-    wickUpColor:"#2FD3A6", wickDownColor:"#F2734A",
+    upColor:"#22C58B", downColor:"#FF5D7A", borderVisible:false,
+    wickUpColor:"#22C58B", wickDownColor:"#FF5D7A",
   });
-  series.setData(candles.map(c => ({time:c.time, open:c.open, high:c.high, low:c.low, close:c.close})));
+  series.setData(shown.map(c => ({time:c.time, open:c.open, high:c.high, low:c.low, close:c.close})));
   chart.timeScale().fitContent();
   return chart;
 }
@@ -346,17 +383,17 @@ function openModal(pair){
 
   requestAnimationFrame(() => {
     const chart = LightweightCharts.createChart(chartEl, {
-      width: chartEl.clientWidth, height: 260,
-      layout:{ background:{color:"transparent"}, textColor:"#8494B0" },
-      grid:{ vertLines:{color:"#1A2740"}, horzLines:{color:"#1A2740"} },
-      rightPriceScale:{ borderColor:"#223252" },
-      timeScale:{ borderColor:"#223252", timeVisible:true },
+      width: chartEl.clientWidth, height: 300,
+      layout:{ background:{color:"transparent"}, textColor:"#8A7FAE", fontFamily:"JetBrains Mono" },
+      grid:{ vertLines:{color:"#F1EBFB"}, horzLines:{color:"#F1EBFB"} },
+      rightPriceScale:{ borderColor:"#F1EBFB" },
+      timeScale:{ borderColor:"#F1EBFB", timeVisible:true },
     });
     const series = chart.addCandlestickSeries({
-      upColor:"#2FD3A6", downColor:"#F2734A", borderVisible:false,
-      wickUpColor:"#2FD3A6", wickDownColor:"#F2734A",
+      upColor:"#22C58B", downColor:"#FF5D7A", borderVisible:false,
+      wickUpColor:"#22C58B", wickDownColor:"#FF5D7A",
     });
-    series.setData((s.candles||[]).map(c => ({time:c.time, open:c.open, high:c.high, low:c.low, close:c.close})));
+    series.setData(visibleCandles(s.candles).map(c => ({time:c.time, open:c.open, high:c.high, low:c.low, close:c.close})));
     chart.timeScale().fitContent();
   });
 }
@@ -562,6 +599,16 @@ document.getElementById("keySave").onclick = () => {
   document.getElementById("keyDialog").classList.remove("open");
   setLiveMode(true);
 };
+
+// Time-range picker — re-slices the already-loaded candle data, no re-fetch needed
+document.getElementById("rangePicker").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-range]");
+  if(!btn) return;
+  rangeCandles = parseInt(btn.dataset.range, 10);
+  document.querySelectorAll("#rangePicker button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  if(latestData) render(latestData);
+});
 
 // ---------------------------------------------------------------------
 // Boot
