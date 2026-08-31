@@ -1,4 +1,4 @@
-const CACHE_NAME = "fx-signal-shell-v1";
+const CACHE_NAME = "fx-signal-shell-v2"; // bumped so browsers detect this file changed and drop the old (stale) cache
 const SHELL_FILES = [
   "./dashboard.html",
   "./manifest.json",
@@ -22,20 +22,20 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Network-first for signals.json / API calls (always want fresh data when online),
-// cache-first for the static app shell (so it still opens offline).
+// Network-first for EVERYTHING (app shell + data): always try to fetch the
+// latest version first, and only fall back to the cached copy if the
+// network request fails (i.e. genuinely offline). This is what makes future
+// edits to dashboard.html show up immediately instead of getting stuck
+// behind a stale cache — the previous cache-first version of this file was
+// the cause of "UI ไม่เปลี่ยน" after updates.
 self.addEventListener("fetch", (event) => {
-  const url = event.request.url;
-  const isData = url.includes("signals.json") || url.includes("api.twelvedata.com");
-
-  if (isData) {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
