@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Forex Signal Board</title>
+
+<!-- PWA: installable to a phone home screen -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FX Signals">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+
+<style>
+  :root{
+    --bg: #0B1220;
+    --panel: #121B2E;
+    --panel-line: #223252;
+    --text: #E7ECF5;
+    --text-dim: #8494B0;
+    --buy: #2FD3A6;
+    --sell: #F2734A;
+    --hold: #5B6B8C;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 500px at 15% -10%, rgba(47,211,166,0.08), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    padding:20px 16px calc(90px + env(safe-area-inset-bottom));
+  }
+  header{
+    max-width:1100px;
+    margin:0 auto 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+    border-bottom:1px solid var(--panel-line);
+    padding-bottom:16px;
+  }
+  h1{ font-size:22px; margin:0 0 4px; font-weight:600; letter-spacing:-0.01em; }
+  header p{ margin:0; color:var(--text-dim); font-size:13px; max-width:480px; }
+  #meta{ font-family:var(--mono); font-size:11px; color:var(--text-dim); text-align:right; }
+  #meta span{color:var(--text);}
+
+  .toolbar{
+    max-width:1100px; margin:0 auto 16px;
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  }
+  .live-toggle{
+    display:flex; align-items:center; gap:8px;
+    background:var(--panel); border:1px solid var(--panel-line);
+    border-radius:20px; padding:6px 14px 6px 6px; font-size:13px; cursor:pointer;
+    user-select:none;
+  }
+  .live-dot{ width:9px; height:9px; border-radius:50%; background:var(--hold); transition:background .2s; }
+  .live-toggle.on .live-dot{ background:var(--buy); box-shadow:0 0 8px var(--buy); animation:pulse 1.4s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.4} }
+  .live-status{ font-family:var(--mono); font-size:11px; color:var(--text-dim); }
+
+  .disclaimer{
+    max-width:1100px; margin:0 auto 20px;
+    background:rgba(242,115,74,0.08); border:1px solid rgba(242,115,74,0.35);
+    color:#F2B79A; font-size:12.5px; padding:11px 15px; border-radius:6px;
+  }
+
+  .grid{
+    max-width:1100px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:8px;
+    padding:16px 18px; position:relative; overflow:hidden; cursor:pointer;
+    transition:border-color .15s;
+  }
+  .card:active{ border-color:#3A4E76; }
+  .card::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; }
+  .card.buy::before{background:var(--buy);}
+  .card.sell::before{background:var(--sell);}
+  .card.hold::before{background:var(--hold);}
+  .card-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+  .pair{ font-family:var(--mono); font-size:16px; font-weight:600; }
+  .badge{ font-family:var(--mono); font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600; }
+  .badge.buy{background:rgba(47,211,166,0.15); color:var(--buy);}
+  .badge.sell{background:rgba(242,115,74,0.15); color:var(--sell);}
+  .badge.hold{background:rgba(91,107,140,0.2); color:#AEB9CF;}
+  .price-row{ display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+  .price{ font-family:var(--mono); font-size:20px; transition:color .3s; }
+  .price.flash-up{ color:var(--buy); }
+  .price.flash-down{ color:var(--sell); }
+  .mini-chart{ height:64px; margin-bottom:10px; border-radius:4px; overflow:hidden; }
+  .metrics{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;
+    font-family:var(--mono); font-size:11px; color:var(--text-dim);
+    border-top:1px solid var(--panel-line); padding-top:9px; margin-bottom:8px;
+  }
+  .metrics div b{display:block; color:var(--text); font-size:12.5px; font-weight:500;}
+  .confidence-bar{ height:4px; background:var(--panel-line); border-radius:2px; margin-bottom:8px; overflow:hidden; }
+  .confidence-fill{height:100%;}
+  .card.buy .confidence-fill{background:var(--buy);}
+  .card.sell .confidence-fill{background:var(--sell);}
+  .card.hold .confidence-fill{background:var(--hold);}
+  .reasons{ font-size:12px; color:var(--text-dim); line-height:1.55; margin:0; padding-left:15px; }
+
+  .empty, .error{ max-width:1100px; margin:60px auto; text-align:center; color:var(--text-dim); font-size:14px; }
+  .error{color:var(--sell);}
+  code{ background:rgba(255,255,255,0.06); padding:1px 6px; border-radius:4px; font-family:var(--mono); }
+
+  /* Modal with full chart */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(6,10,18,0.75);
+    z-index:50; align-items:flex-end; justify-content:center;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background:var(--panel); border:1px solid var(--panel-line);
+    border-radius:14px 14px 0 0; width:100%; max-width:640px;
+    padding:18px 18px calc(20px + env(safe-area-inset-bottom));
+    max-height:85vh; overflow-y:auto;
+  }
+  .modal-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .modal-close{ background:none; border:none; color:var(--text-dim); font-size:22px; cursor:pointer; padding:4px 8px; }
+  .modal-chart{ height:260px; border-radius:6px; overflow:hidden; margin-bottom:14px; }
+
+  /* Live mode key input dialog */
+  .key-dialog{
+    display:none; position:fixed; inset:0; background:rgba(6,10,18,0.8);
+    z-index:60; align-items:center; justify-content:center; padding:20px;
+  }
+  .key-dialog.open{ display:flex; }
+  .key-box{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:10px;
+    padding:22px; max-width:380px; width:100%;
+  }
+  .key-box h3{ margin:0 0 8px; font-size:16px; }
+  .key-box p{ color:var(--text-dim); font-size:13px; line-height:1.5; margin:0 0 14px; }
+  .key-box input{
+    width:100%; background:#0D1524; border:1px solid var(--panel-line); border-radius:6px;
+    color:var(--text); padding:10px 12px; font-family:var(--mono); font-size:13px; margin-bottom:14px;
+  }
+  .key-box .btn-row{ display:flex; gap:10px; }
+  .key-box button{
+    flex:1; padding:10px; border-radius:6px; border:1px solid var(--panel-line);
+    background:#0D1524; color:var(--text); font-size:13px; cursor:pointer;
+  }
+  .key-box button.primary{ background:var(--buy); color:#062; border-color:var(--buy); font-weight:600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Forex Signal Board</h1>
+    <p>สัญญาณจากอินดิเคเตอร์ทางเทคนิค (EMA, RSI, MACD, Stochastic, ADX, Bollinger)</p>
+  </div>
+  <div id="meta">อัปเดตล่าสุด: <span id="ts">–</span></div>
+</header>
+
+<div class="toolbar">
+  <div class="live-toggle" id="liveToggle">
+    <span class="live-dot"></span>
+    <span id="liveLabel">โหมดปกติ (อัปเดตทุก ~15-30 นาที)</span>
+  </div>
+  <span class="live-status" id="liveStatus"></span>
+</div>
+
+<div class="disclaimer">
+  ⚠️ สัญญาณเชิงเทคนิคจากข้อมูลราคาย้อนหลังเท่านั้น ไม่ใช่คำทำนายราคาและไม่ใช่คำแนะนำการลงทุน
+  ไม่มีระบบไหนเพิ่ม "ความแม่นยำ" ในการทำนายตลาดได้จริง ใช้ประกอบการตัดสินใจร่วมกับการบริหารความเสี่ยงของคุณเอง
+</div>
+
+<div id="content" class="grid"></div>
+
+<!-- Chart modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-top">
+      <span class="pair" id="modalPair">–</span>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-chart" id="modalChart"></div>
+    <div class="metrics" id="modalMetrics"></div>
+    <ul class="reasons" id="modalReasons"></ul>
+  </div>
+</div>
+
+<!-- Live mode API key dialog -->
+<div class="key-dialog" id="keyDialog">
+  <div class="key-box">
+    <h3>เปิดโหมดสด (Live)</h3>
+    <p>
+      โหมดนี้ดึงราคาตรงจากเบราว์เซอร์คุณเองทุก ~2 นาที โดยใช้ API key ของคุณ (จาก Twelve Data)
+      คีย์จะถูกเก็บไว้ใน localStorage ของเบราว์เซอร์นี้เท่านั้น ไม่ถูกส่งไปที่อื่น —
+      แต่คีย์จะปรากฏใน network request ที่ browser devtools มองเห็นได้ ถ้าใช้เครื่องสาธารณะ อย่าเปิดโหมดนี้
+    </p>
+    <input type="text" id="apiKeyInput" placeholder="วาง Twelve Data API key ที่นี่">
+    <div class="btn-row">
+      <button id="keyCancel">ยกเลิก</button>
+      <button class="primary" id="keySave">เปิดใช้งาน</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const REFRESH_MS = 15000;       // how often to re-render from signals.json in normal mode
+const LIVE_POLL_MS = 120000;    // client-side live poll interval (2 min — stays inside free API rate limits)
+const LIVE_PAIRS = ["EUR/USD","GBP/USD","USD/JPY","USD/CHF","AUD/USD","USD/CAD","NZD/USD",
+                     "EUR/GBP","EUR/JPY","GBP/JPY","AUD/JPY","EUR/AUD","GBP/AUD","CHF/JPY"];
+
+let lastPrices = {};   // pair -> previous price, for up/down flash
+let latestData = null; // last full signals payload (from file or live)
+let miniCharts = {};   // pair -> lightweight-charts instance (mini card charts)
+let liveMode = false;
+let liveTimer = null;
+
+// ---------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------
+
+function badgeClass(signal){
+  if(signal === "BUY") return "buy";
+  if(signal === "SELL") return "sell";
+  return "hold";
+}
+
+function drawMiniChart(container, candles, signal){
+  container.innerHTML = "";
+  if(!candles || candles.length < 2) return;
+  const chart = LightweightCharts.createChart(container, {
+    width: container.clientWidth, height: 64,
+    layout:{ background:{color:"transparent"}, textColor:"#8494B0", fontSize:9 },
+    grid:{ vertLines:{visible:false}, horzLines:{visible:false} },
+    rightPriceScale:{ visible:false },
+    timeScale:{ visible:false },
+    handleScroll:false, handleScale:false,
+    crosshair:{ horzLine:{visible:false}, vertLine:{visible:false} },
+  });
+  const series = chart.addCandlestickSeries({
+    upColor:"#2FD3A6", downColor:"#F2734A", borderVisible:false,
+    wickUpColor:"#2FD3A6", wickDownColor:"#F2734A",
+  });
+  series.setData(candles.map(c => ({time:c.time, open:c.open, high:c.high, low:c.low, close:c.close})));
+  chart.timeScale().fitContent();
+  return chart;
+}
+
+function render(data){
+  latestData = data;
+  const content = document.getElementById("content");
+  const tsEl = document.getElementById("ts");
+  tsEl.textContent = new Date(data.generated_at).toLocaleString("th-TH");
+
+  const pairs = Object.entries(data.signals || {});
+  if(pairs.length === 0){
+    content.innerHTML = '<div class="empty">ยังไม่มีข้อมูลสัญญาณ — รอรอบแรกของระบบ</div>';
+    return;
+  }
+
+  content.innerHTML = pairs.map(([pair, s]) => {
+    const cls = badgeClass(s.signal);
+    const confPct = Math.round((s.confidence || 0) * 100);
+    return `
+      <div class="card ${cls}" data-pair="${pair}">
+        <div class="card-top">
+          <span class="pair">${pair}</span>
+          <span class="badge ${cls}">${s.signal}</span>
+        </div>
+        <div class="price-row"><span class="price" id="price-${cssSafe(pair)}">${s.price}</span></div>
+        <div class="mini-chart" id="mini-${cssSafe(pair)}"></div>
+        <div class="confidence-bar"><div class="confidence-fill" style="width:${confPct}%"></div></div>
+        <div class="metrics">
+          <div>RSI(14)<b>${s.rsi14 ?? "–"}</b></div>
+          <div>ADX(14)<b>${s.adx14 ?? "–"}${s.trending ? " 📈" : ""}</b></div>
+          <div>มั่นใจ<b>${confPct}%</b></div>
+        </div>
+        <ul class="reasons">${(s.reasons || []).slice(0,3).map(r => `<li>${r}</li>`).join("")}</ul>
+      </div>
+    `;
+  }).join("");
+
+  // draw mini charts + wire up flashes + click-to-expand
+  pairs.forEach(([pair, s]) => {
+    const id = cssSafe(pair);
+    const mini = document.getElementById(`mini-${id}`);
+    if(mini) miniCharts[pair] = drawMiniChart(mini, s.candles, s.signal);
+    flashPrice(pair, s.price);
+  });
+
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", () => openModal(card.dataset.pair));
+  });
+}
+
+function cssSafe(pair){ return pair.replace("/", "-"); }
+
+function flashPrice(pair, newPrice){
+  const el = document.getElementById(`price-${cssSafe(pair)}`);
+  if(!el) return;
+  const prev = lastPrices[pair];
+  el.textContent = newPrice;
+  if(prev !== undefined && newPrice !== prev){
+    el.classList.remove("flash-up","flash-down");
+    void el.offsetWidth; // restart animation
+    el.classList.add(newPrice > prev ? "flash-up" : "flash-down");
+    setTimeout(() => el.classList.remove("flash-up","flash-down"), 1200);
+  }
+  lastPrices[pair] = newPrice;
+}
+
+// ---------------------------------------------------------------------
+// Modal (full chart)
+// ---------------------------------------------------------------------
+
+function openModal(pair){
+  const s = latestData.signals[pair];
+  if(!s) return;
+  document.getElementById("modalPair").textContent = pair;
+  document.getElementById("modalMetrics").innerHTML = `
+    <div>RSI(14)<b>${s.rsi14 ?? "–"}</b></div>
+    <div>Stoch %K<b>${s.stoch_k ?? "–"}</b></div>
+    <div>ADX(14)<b>${s.adx14 ?? "–"}</b></div>
+    <div>EMA9<b>${s.ema9 ?? "–"}</b></div>
+    <div>EMA21<b>${s.ema21 ?? "–"}</b></div>
+    <div>MACD hist<b>${s.macd_hist ?? "–"}</b></div>
+  `;
+  document.getElementById("modalReasons").innerHTML = (s.reasons || []).map(r => `<li>${r}</li>`).join("");
+
+  const chartEl = document.getElementById("modalChart");
+  chartEl.innerHTML = "";
+  const overlay = document.getElementById("modalOverlay");
+  overlay.classList.add("open");
+
+  requestAnimationFrame(() => {
+    const chart = LightweightCharts.createChart(chartEl, {
+      width: chartEl.clientWidth, height: 260,
+      layout:{ background:{color:"transparent"}, textColor:"#8494B0" },
+      grid:{ vertLines:{color:"#1A2740"}, horzLines:{color:"#1A2740"} },
+      rightPriceScale:{ borderColor:"#223252" },
+      timeScale:{ borderColor:"#223252", timeVisible:true },
+    });
+    const series = chart.addCandlestickSeries({
+      upColor:"#2FD3A6", downColor:"#F2734A", borderVisible:false,
+      wickUpColor:"#2FD3A6", wickDownColor:"#F2734A",
+    });
+    series.setData((s.candles||[]).map(c => ({time:c.time, open:c.open, high:c.high, low:c.low, close:c.close})));
+    chart.timeScale().fitContent();
+  });
+}
+
+document.getElementById("modalClose").onclick = () => document.getElementById("modalOverlay").classList.remove("open");
+document.getElementById("modalOverlay").addEventListener("click", (e) => {
+  if(e.target.id === "modalOverlay") e.currentTarget.classList.remove("open");
+});
+
+// ---------------------------------------------------------------------
+// Normal mode: load signals.json committed by GitHub Actions
+// ---------------------------------------------------------------------
+
+async function loadFromFile(){
+  try{
+    const res = await fetch("signals.json?_=" + Date.now());
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    render(await res.json());
+  }catch(e){
+    document.getElementById("content").innerHTML =
+      `<div class="error">โหลด signals.json ไม่สำเร็จ (${e.message}).<br>
+       รอให้ GitHub Actions รันรอบแรก หรือเปิดโหมดสดด้านบนแทน</div>`;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Live mode: fetch + compute indicators directly in the browser
+// ---------------------------------------------------------------------
+
+function emaSeries(values, span){
+  const k = 2/(span+1);
+  const out = [values[0]];
+  for(let i=1;i<values.length;i++) out.push(values[i]*k + out[i-1]*(1-k));
+  return out;
+}
+
+function rsiSeries(closes, period=14){
+  const out = new Array(closes.length).fill(null);
+  let avgGain=0, avgLoss=0;
+  for(let i=1;i<closes.length;i++){
+    const delta = closes[i]-closes[i-1];
+    const gain = Math.max(delta,0), loss = Math.max(-delta,0);
+    if(i <= period){ avgGain += gain/period; avgLoss += loss/period; }
+    else{ avgGain = (avgGain*(period-1)+gain)/period; avgLoss = (avgLoss*(period-1)+loss)/period; }
+    if(i>=period){ const rs = avgGain/(avgLoss||1e-10); out[i] = 100-(100/(1+rs)); }
+  }
+  return out;
+}
+
+function stochasticSeries(candles, kPeriod=14, dPeriod=3){
+  const k = new Array(candles.length).fill(null);
+  for(let i=kPeriod-1;i<candles.length;i++){
+    const slice = candles.slice(i-kPeriod+1, i+1);
+    const hi = Math.max(...slice.map(c=>c.high)), lo = Math.min(...slice.map(c=>c.low));
+    k[i] = 100*(candles[i].close-lo)/((hi-lo)||1e-10);
+  }
+  const d = new Array(candles.length).fill(null);
+  for(let i=0;i<k.length;i++){
+    if(i>=kPeriod-1+dPeriod-1){
+      const vals = k.slice(i-dPeriod+1, i+1).filter(v=>v!==null);
+      d[i] = vals.reduce((a,b)=>a+b,0)/vals.length;
+    }
+  }
+  return {k, d};
+}
+
+function adxSeries(candles, period=14){
+  const n = candles.length;
+  const plusDM = new Array(n).fill(0), minusDM = new Array(n).fill(0), tr = new Array(n).fill(0);
+  for(let i=1;i<n;i++){
+    const up = candles[i].high-candles[i-1].high;
+    const down = candles[i-1].low-candles[i].low;
+    plusDM[i] = (up>down && up>0) ? up : 0;
+    minusDM[i] = (down>up && down>0) ? down : 0;
+    tr[i] = Math.max(
+      candles[i].high-candles[i].low,
+      Math.abs(candles[i].high-candles[i-1].close),
+      Math.abs(candles[i].low-candles[i-1].close)
+    );
+  }
+  const smooth = (arr) => { const out=new Array(n).fill(0); for(let i=1;i<n;i++) out[i]=out[i-1]-(out[i-1]/period)+arr[i]; return out; };
+  const atr = smooth(tr), pDM = smooth(plusDM), mDM = smooth(minusDM);
+  const dx = new Array(n).fill(null);
+  for(let i=1;i<n;i++){
+    const pDI = 100*pDM[i]/(atr[i]||1e-10), mDI = 100*mDM[i]/(atr[i]||1e-10);
+    dx[i] = 100*Math.abs(pDI-mDI)/((pDI+mDI)||1e-10);
+  }
+  return emaSeries(dx.map(v=>v??0), period);
+}
+
+function computeLiveSignal(candles){
+  const closes = candles.map(c=>c.close);
+  const ema9 = emaSeries(closes,9), ema21 = emaSeries(closes,21);
+  const rsi14 = rsiSeries(closes,14);
+  const emaFast = emaSeries(closes,12), emaSlow = emaSeries(closes,26);
+  const macdLine = emaFast.map((v,i)=>v-emaSlow[i]);
+  const macdSignal = emaSeries(macdLine,9);
+  const macdHist = macdLine.map((v,i)=>v-macdSignal[i]);
+  const {k:stochK, d:stochD} = stochasticSeries(candles);
+  const adx14 = adxSeries(candles);
+
+  const i = candles.length-1, p = i-1;
+  const trending = adx14[i] >= 20;
+  const trendWeight = trending ? 1 : 0.5;
+  let score = 0; const reasons = [];
+
+  if(ema9[i] > ema21[i]){
+    score += 1*trendWeight;
+    reasons.push(ema9[p] <= ema21[p] ? "EMA9 เพิ่งตัดขึ้นเหนือ EMA21" : "EMA9 อยู่เหนือ EMA21 (ขาขึ้น)");
+    if(ema9[p] <= ema21[p]) score += 1*trendWeight;
+  } else {
+    score -= 1*trendWeight;
+    reasons.push(ema9[p] >= ema21[p] ? "EMA9 เพิ่งตัดลงใต้ EMA21" : "EMA9 อยู่ใต้ EMA21 (ขาลง)");
+    if(ema9[p] >= ema21[p]) score -= 1*trendWeight;
+  }
+  if(rsi14[i] < 30){ score += 1; reasons.push(`RSI ${rsi14[i].toFixed(1)} oversold`); }
+  else if(rsi14[i] > 70){ score -= 1; reasons.push(`RSI ${rsi14[i].toFixed(1)} overbought`); }
+
+  if(macdHist[i] > 0 && macdHist[p] <= 0){ score += 1; reasons.push("MACD histogram กลับเป็นบวก"); }
+  else if(macdHist[i] < 0 && macdHist[p] >= 0){ score -= 1; reasons.push("MACD histogram กลับเป็นลบ"); }
+
+  if(stochK[i] !== null && stochD[i] !== null){
+    if(stochK[i] < 20 && stochK[i] > stochD[i] && stochK[p] <= stochD[p]){ score += 1; reasons.push("Stochastic ตัดขึ้นในเขต oversold"); }
+    else if(stochK[i] > 80 && stochK[i] < stochD[i] && stochK[p] >= stochD[p]){ score -= 1; reasons.push("Stochastic ตัดลงในเขต overbought"); }
+  }
+
+  const signal = score >= 2.5 ? "BUY" : score <= -2.5 ? "SELL" : "HOLD";
+  return {
+    signal, score: Math.round(score*100)/100, confidence: Math.min(Math.abs(score)/5,1),
+    trending, adx14: Math.round(adx14[i]*10)/10, reasons,
+    price: closes[i], rsi14: Math.round(rsi14[i]*100)/100,
+    stoch_k: stochK[i]!==null ? Math.round(stochK[i]*10)/10 : null,
+    ema9: ema9[i], ema21: ema21[i], macd_hist: macdHist[i],
+    candles: candles.slice(-80),
+  };
+}
+
+async function fetchLivePair(pair, apiKey){
+  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(pair)}&interval=15min&outputsize=100&apikey=${apiKey}&format=JSON`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if(!data.values) throw new Error(data.message || "API error");
+  const candles = data.values.map(v => ({
+    time: Math.floor(new Date(v.datetime).getTime()/1000),
+    open: parseFloat(v.open), high: parseFloat(v.high), low: parseFloat(v.low), close: parseFloat(v.close),
+  })).sort((a,b)=>a.time-b.time);
+  return candles;
+}
+
+async function runLivePoll(){
+  const apiKey = localStorage.getItem("td_api_key");
+  if(!apiKey) return;
+  const statusEl = document.getElementById("liveStatus");
+  const signals = {};
+  let done = 0;
+  for(const pair of LIVE_PAIRS){
+    try{
+      const candles = await fetchLivePair(pair, apiKey);
+      signals[pair] = computeLiveSignal(candles);
+    }catch(e){
+      console.warn(pair, e);
+    }
+    done++;
+    statusEl.textContent = `กำลังดึงข้อมูลสด… ${done}/${LIVE_PAIRS.length}`;
+    await new Promise(r => setTimeout(r, 800)); // stay under ~8 req/min rate limit
+  }
+  statusEl.textContent = `โหมดสด • อัปเดตล่าสุด ${new Date().toLocaleTimeString("th-TH")}`;
+  render({ generated_at: new Date().toISOString(), signals });
+}
+
+function setLiveMode(on){
+  liveMode = on;
+  const toggle = document.getElementById("liveToggle");
+  const label = document.getElementById("liveLabel");
+  const statusEl = document.getElementById("liveStatus");
+  toggle.classList.toggle("on", on);
+  clearInterval(liveTimer);
+
+  if(on){
+    label.textContent = "โหมดสด (ดึงจากเบราว์เซอร์คุณเองทุก ~2 นาที)";
+    runLivePoll();
+    liveTimer = setInterval(runLivePoll, LIVE_POLL_MS);
+  } else {
+    label.textContent = "โหมดปกติ (อัปเดตทุก ~15-30 นาที)";
+    statusEl.textContent = "";
+    loadFromFile();
+  }
+}
+
+document.getElementById("liveToggle").addEventListener("click", () => {
+  if(liveMode){ setLiveMode(false); return; }
+  const savedKey = localStorage.getItem("td_api_key");
+  if(savedKey){ setLiveMode(true); return; }
+  document.getElementById("keyDialog").classList.add("open");
+});
+document.getElementById("keyCancel").onclick = () => document.getElementById("keyDialog").classList.remove("open");
+document.getElementById("keySave").onclick = () => {
+  const val = document.getElementById("apiKeyInput").value.trim();
+  if(!val) return;
+  localStorage.setItem("td_api_key", val);
+  document.getElementById("keyDialog").classList.remove("open");
+  setLiveMode(true);
+};
+
+// ---------------------------------------------------------------------
+// Boot
+// ---------------------------------------------------------------------
+
+loadFromFile();
+setInterval(() => { if(!liveMode) loadFromFile(); }, REFRESH_MS);
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
