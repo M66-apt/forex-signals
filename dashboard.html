@@ -521,7 +521,9 @@ async function runLivePoll(){
     }
     done++;
     statusEl.textContent = `กำลังดึงข้อมูลสด… ${done}/${LIVE_PAIRS.length}`;
-    await new Promise(r => setTimeout(r, 800)); // stay under ~8 req/min rate limit
+    // Twelve Data free plan allows 8 requests/minute — space calls ~8s apart
+    // so all pairs succeed instead of the later ones getting rate-limited.
+    if(done < LIVE_PAIRS.length) await new Promise(r => setTimeout(r, 8000));
   }
   statusEl.textContent = `โหมดสด • อัปเดตล่าสุด ${new Date().toLocaleTimeString("th-TH")}`;
   render({ generated_at: new Date().toISOString(), signals });
