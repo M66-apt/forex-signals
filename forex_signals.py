@@ -332,6 +332,13 @@ def save_last_state(state: dict):
 # Main loop
 # --------------------------------------------------------------------------
 
+# Twelve Data free plan allows 8 requests/minute. Spacing requests 8 seconds
+# apart keeps us safely under that (7.5s would be the exact limit) even
+# accounting for network latency, so all 14 pairs succeed instead of the
+# 9th-14th getting rate-limited and silently dropped.
+REQUEST_SPACING_SECONDS = 8
+
+
 def run_once() -> dict:
     if not TWELVE_DATA_API_KEY:
         print("[error] TWELVE_DATA_API_KEY is not set. See README.md for setup.")
@@ -340,7 +347,9 @@ def run_once() -> dict:
     last_state = load_last_state()
     all_signals = {}
 
-    for pair in PAIRS:
+    for i, pair in enumerate(PAIRS):
+        if i > 0:
+            time.sleep(REQUEST_SPACING_SECONDS)
         try:
             df = fetch_candles(pair)
             df = compute_indicators(df)
@@ -361,6 +370,7 @@ def run_once() -> dict:
             print(f"[warn] {pair}: {e}")
             if pair in last_state:
                 all_signals[pair] = last_state[pair]
+                print(f"[info] {pair}: keeping previous signal from last successful run")
 
     output = {
         "generated_at": datetime.datetime.now().isoformat(),
