@@ -324,6 +324,7 @@ function render(data){
           <div>ADX(14)<b>${s.adx14 ?? "–"}${s.trending ? " 📈" : ""}</b></div>
           <div>มั่นใจ<b>${confPct}%</b></div>
         </div>
+        ${mlRowHTML(s.ml)}
         <ul class="reasons">${(s.reasons || []).slice(0,3).map(r => `<li>${r}</li>`).join("")}</ul>
       </div>
     `;
@@ -343,6 +344,20 @@ function render(data){
 }
 
 function cssSafe(pair){ return pair.replace("/", "-"); }
+
+function mlRowHTML(ml){
+  if(!ml || !ml.available) return "";
+  const pct = Math.round(ml.probability_up * 100);
+  const up = ml.probability_up >= 0.5;
+  const color = up ? "var(--buy)" : "var(--sell)";
+  const acc = ml.test_accuracy != null ? Math.round(ml.test_accuracy * 100) : null;
+  return `
+    <div style="display:flex; justify-content:space-between; align-items:center; background:#FCFAFF; border:2px solid var(--panel-line); border-radius:12px; padding:8px 12px; margin-bottom:10px; font-size:11.5px; font-weight:700;">
+      <span style="color:var(--text-dim);">🤖 โมเดล ML: โอกาส${up ? "ขึ้น" : "ลง"} ${up ? pct : 100-pct}%</span>
+      <span style="color:${color};">${acc != null ? `แม่นยำย้อนหลัง ${acc}%` : ""}</span>
+    </div>
+  `;
+}
 
 function flashPrice(pair, newPrice){
   const el = document.getElementById(`price-${cssSafe(pair)}`);
@@ -374,7 +389,14 @@ function openModal(pair){
     <div>EMA21<b>${s.ema21 ?? "–"}</b></div>
     <div>MACD hist<b>${s.macd_hist ?? "–"}</b></div>
   `;
-  document.getElementById("modalReasons").innerHTML = (s.reasons || []).map(r => `<li>${r}</li>`).join("");
+  document.getElementById("modalReasons").innerHTML =
+    mlRowHTML(s.ml) + (s.ml && s.ml.available
+      ? `<li style="list-style:none; margin:-4px 0 8px; font-size:11px; color:var(--text-dim);">
+           เทรนเมื่อ ${s.ml.trained_at ? new Date(s.ml.trained_at).toLocaleDateString("th-TH") : "–"} •
+           ทำนายล่วงหน้า ${s.ml.horizon_candles ?? "–"} แท่ง • ทดสอบกับข้อมูลที่โมเดลไม่เคยเห็นมาก่อนเท่านั้น
+         </li>`
+      : "") +
+    (s.reasons || []).map(r => `<li>${r}</li>`).join("");
 
   const chartEl = document.getElementById("modalChart");
   chartEl.innerHTML = "";
