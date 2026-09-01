@@ -11,6 +11,13 @@ on:
 permissions:
   contents: write
 
+# Same concurrency group as forex-signals.yml — see the comment there.
+# This is what actually fixes the repeated 429s: the two workflows can no
+# longer run at the same time and repeatedly knock each other's retries out.
+concurrency:
+  group: twelvedata-api-quota
+  cancel-in-progress: false
+
 jobs:
   train:
     runs-on: ubuntu-latest
@@ -29,6 +36,7 @@ jobs:
       - name: Train model
         env:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          PYTHONUNBUFFERED: "1"   # stream log output live instead of only showing it at exit
         run: python ml/train_model.py
 
       - name: Commit updated model + cached data
