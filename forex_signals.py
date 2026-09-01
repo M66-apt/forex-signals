@@ -91,8 +91,14 @@ TWELVE_DATA_URL = "https://api.twelvedata.com/time_series"
 # Data fetching
 # --------------------------------------------------------------------------
 
-def fetch_candles(pair: str, interval: str = INTERVAL, outputsize: int = OUTPUT_SIZE) -> pd.DataFrame:
-    """Fetch OHLC candles for one pair from Twelve Data."""
+def fetch_candles(pair: str, interval: str = INTERVAL, outputsize: int = OUTPUT_SIZE, max_retries: int = 4) -> pd.DataFrame:
+    """Fetch OHLC candles for one pair from Twelve Data.
+
+    Retries with backoff on HTTP 429 (rate limited) — this can happen even
+    when THIS script is pacing itself correctly, if another workflow (e.g.
+    the 30-minute signal-update cron) happens to be hitting the same API
+    key's shared rate limit at the same time.
+    """
     params = {
         "symbol": pair,
         "interval": interval,
@@ -100,20 +106,28 @@ def fetch_candles(pair: str, interval: str = INTERVAL, outputsize: int = OUTPUT_
         "apikey": TWELVE_DATA_API_KEY,
         "format": "JSON",
     }
-    resp = requests.get(TWELVE_DATA_URL, params=params, timeout=15)
-    resp.raise_for_status()
-    data = resp.json()
 
-    if "values" not in data:
-        raise RuntimeError(f"API error for {pair}: {data.get('message', data)}")
+    for attempt in range(max_retries):
+        resp = requests.get(TWELVE_DATA_URL, params=params, timeout=15)
+        if resp.status_code == 429:
+            wait = int(resp.headers.get("Retry-After", 20 * (attempt + 1)))
+            print(f"[warn] {pair}: rate limited (429), waiting {wait}s before retry {attempt + 1}/{max_retries}")
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        data = resp.json()
+        if "values" not in data:
+            raise RuntimeError(f"API error for {pair}: {data.get('message', data)}")
 
-    df = pd.DataFrame(data["values"])
-    df = df.rename(columns={"datetime": "time"})
-    for col in ["open", "high", "low", "close"]:
-        df[col] = df[col].astype(float)
-    df["time"] = pd.to_datetime(df["time"])
-    df = df.sort_values("time").reset_index(drop=True)
-    return df
+        df = pd.DataFrame(data["values"])
+        df = df.rename(columns={"datetime": "time"})
+        for col in ["open", "high", "low", "close"]:
+            df[col] = df[col].astype(float)
+        df["time"] = pd.to_datetime(df["time"])
+        df = df.sort_values("time").reset_index(drop=True)
+        return df
+
+    raise RuntimeError(f"{pair}: still rate limited after {max_retries} retries")
 
 
 # --------------------------------------------------------------------------
