@@ -1,0 +1,40 @@
+name: Train ML model
+
+on:
+  workflow_dispatch: {}   # run manually any time from the Actions tab
+  schedule:
+    # Weekly — this both grows the cached historical dataset (ml/data/*.csv)
+    # and retrains on it. Running it more often than this mostly just burns
+    # API quota without meaningfully more data to learn from.
+    - cron: "0 3 * * 1"   # every Monday 03:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train model
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: python ml/train_model.py
+
+      - name: Commit updated model + cached data
+        run: |
+          git config user.name "forex-signal-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add ml/model.pkl ml/model_meta.json ml/data/*.csv
+          git diff --quiet --cached || git commit -m "Retrain ML model [skip ci]"
+          git push
