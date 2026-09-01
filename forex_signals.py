@@ -32,6 +32,7 @@ import os
 import sys
 import json
 import time
+import random
 import datetime
 import requests
 import pandas as pd
@@ -110,8 +111,13 @@ def fetch_candles(pair: str, interval: str = INTERVAL, outputsize: int = OUTPUT_
     for attempt in range(max_retries):
         resp = requests.get(TWELVE_DATA_URL, params=params, timeout=15)
         if resp.status_code == 429:
-            wait = int(resp.headers.get("Retry-After", 20 * (attempt + 1)))
-            print(f"[warn] {pair}: rate limited (429), waiting {wait}s before retry {attempt + 1}/{max_retries}")
+            # Random jitter added on top of the base backoff so this run's
+            # retries land at a different second than another concurrently
+            # retrying process would — without jitter, two retrying scripts
+            # can end up resyncing and hitting 429 forever together.
+            base_wait = int(resp.headers.get("Retry-After", 20 * (attempt + 1)))
+            wait = base_wait + random.uniform(0, 10)
+            print(f"[warn] {pair}: rate limited (429), waiting {wait:.0f}s before retry {attempt + 1}/{max_retries}", flush=True)
             time.sleep(wait)
             continue
         resp.raise_for_status()
