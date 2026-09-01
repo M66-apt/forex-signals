@@ -36,6 +36,8 @@ import datetime
 import requests
 import pandas as pd
 
+from indicators import compute_indicators, compute_ml_features, FEATURE_COLUMNS
+
 # --------------------------------------------------------------------------
 # Configuration
 # --------------------------------------------------------------------------
@@ -115,81 +117,51 @@ def fetch_candles(pair: str, interval: str = INTERVAL, outputsize: int = OUTPUT_
 
 
 # --------------------------------------------------------------------------
-# Indicators
+# ML model (optional) — only used if ml/train_model.py has been run and
+# committed a trained model. Fails gracefully to "not available" otherwise.
 # --------------------------------------------------------------------------
 
-def ema(series: pd.Series, span: int) -> pd.Series:
-    return series.ewm(span=span, adjust=False).mean()
+ML_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ml")
+MODEL_PATH = os.path.join(ML_DIR, "model.pkl")
+META_PATH = os.path.join(ML_DIR, "model_meta.json")
+
+ML_MODEL = None
+ML_META = None
+try:
+    import joblib
+    if os.path.exists(MODEL_PATH) and os.path.exists(META_PATH):
+        ML_MODEL = joblib.load(MODEL_PATH)
+        with open(META_PATH, "r", encoding="utf-8") as f:
+            ML_META = json.load(f)
+        print(f"[info] Loaded ML model trained {ML_META.get('trained_at')}, "
+              f"test accuracy {ML_META.get('test_accuracy')} (baseline {ML_META.get('test_baseline_accuracy')})")
+except ImportError:
+    pass  # scikit-learn/joblib not installed — ML features simply stay unavailable
+except Exception as e:
+    print(f"[warn] Could not load ML model: {e}")
 
 
-def rsi(series: pd.Series, period: int = 14) -> pd.Series:
-    delta = series.diff()
-    gain = delta.clip(lower=0)
-    loss = -delta.clip(upper=0)
-    avg_gain = gain.ewm(alpha=1 / period, adjust=False).mean()
-    avg_loss = loss.ewm(alpha=1 / period, adjust=False).mean()
-    rs = avg_gain / avg_loss.replace(0, 1e-10)
-    return 100 - (100 / (1 + rs))
-
-
-def macd(series: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9):
-    ema_fast = ema(series, fast)
-    ema_slow = ema(series, slow)
-    macd_line = ema_fast - ema_slow
-    signal_line = ema(macd_line, signal)
-    hist = macd_line - signal_line
-    return macd_line, signal_line, hist
-
-
-def bollinger_bands(series: pd.Series, period: int = 20, num_std: float = 2.0):
-    mid = series.rolling(period).mean()
-    std = series.rolling(period).std()
-    upper = mid + num_std * std
-    lower = mid - num_std * std
-    return upper, mid, lower
-
-
-def stochastic(df: pd.DataFrame, k_period: int = 14, d_period: int = 3):
-    low_min = df["low"].rolling(k_period).min()
-    high_max = df["high"].rolling(k_period).max()
-    k = 100 * (df["close"] - low_min) / (high_max - low_min).replace(0, 1e-10)
-    d = k.rolling(d_period).mean()
-    return k, d
-
-
-def adx(df: pd.DataFrame, period: int = 14):
-    """Average Directional Index — measures trend STRENGTH (not direction).
-    Used as a filter: EMA-crossover signals are less trustworthy in a flat,
-    range-bound market (low ADX) than in a genuinely trending one (high ADX)."""
-    high, low, close = df["high"], df["low"], df["close"]
-    up_move = high.diff()
-    down_move = -low.diff()
-    plus_dm = ((up_move > down_move) & (up_move > 0)) * up_move
-    minus_dm = ((down_move > up_move) & (down_move > 0)) * down_move
-
-    tr = pd.concat([
-        high - low,
-        (high - close.shift()).abs(),
-        (low - close.shift()).abs(),
-    ], axis=1).max(axis=1)
-
-    atr = tr.ewm(alpha=1 / period, adjust=False).mean()
-    plus_di = 100 * plus_dm.ewm(alpha=1 / period, adjust=False).mean() / atr.replace(0, 1e-10)
-    minus_di = 100 * minus_dm.ewm(alpha=1 / period, adjust=False).mean() / atr.replace(0, 1e-10)
-    dx = 100 * (plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, 1e-10)
-    return dx.ewm(alpha=1 / period, adjust=False).mean()
-
-
-def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.copy()
-    df["ema9"] = ema(df["close"], 9)
-    df["ema21"] = ema(df["close"], 21)
-    df["rsi14"] = rsi(df["close"], 14)
-    df["macd"], df["macd_signal"], df["macd_hist"] = macd(df["close"])
-    df["bb_upper"], df["bb_mid"], df["bb_lower"] = bollinger_bands(df["close"])
-    df["stoch_k"], df["stoch_d"] = stochastic(df)
-    df["adx14"] = adx(df)
-    return df
+def ml_predict(df: pd.DataFrame) -> dict:
+    """Returns the model's probability that price will be higher N candles
+    from now, based on the same feature set it was trained on. Returns
+    {"available": False} if no model has been trained yet."""
+    if ML_MODEL is None or ML_META is None:
+        return {"available": False}
+    try:
+        row = df.iloc[-1]
+        feat_cols = ML_META["feature_columns"]
+        feats = pd.DataFrame([[row[c] for c in feat_cols]], columns=feat_cols)
+        proba_up = float(ML_MODEL.predict_proba(feats)[0][1])
+        return {
+            "available": True,
+            "probability_up": round(proba_up, 3),
+            "horizon_candles": ML_META.get("horizon_candles"),
+            "trained_at": ML_META.get("trained_at"),
+            "test_accuracy": ML_META.get("test_accuracy"),
+            "test_baseline_accuracy": ML_META.get("test_baseline_accuracy"),
+        }
+    except Exception as e:
+        return {"available": False, "error": str(e)}
 
 
 # --------------------------------------------------------------------------
@@ -202,7 +174,9 @@ def compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
 # signals: an EMA crossover in a flat, choppy market (low ADX) is mostly
 # noise, so its weight is halved instead of counted at full strength. That
 # improves signal *quality/consistency*, not predictive power. Always
-# backtest before trusting any of this with real money.
+# backtest before trusting any of this with real money. The ML block below
+# is a genuinely separate, data-driven opinion — see ml/train_model.py and
+# README.md for what its accuracy numbers actually mean (and don't mean).
 
 def generate_signal(df: pd.DataFrame) -> dict:
     last = df.iloc[-1]
@@ -272,6 +246,8 @@ def generate_signal(df: pd.DataFrame) -> dict:
 
     confidence = min(abs(score) / 5.0, 1.0)
 
+    ml = ml_predict(df)
+
     return {
         "signal": signal,
         "score": round(score, 2),
@@ -286,6 +262,7 @@ def generate_signal(df: pd.DataFrame) -> dict:
         "ema21": round(float(last["ema21"]), 5),
         "macd_hist": round(float(last["macd_hist"]), 6) if pd.notna(last["macd_hist"]) else None,
         "time": last["time"].isoformat(),
+        "ml": ml,
         "candles": [
             {
                 "time": int(row["time"].timestamp()),
@@ -353,6 +330,7 @@ def run_once() -> dict:
         try:
             df = fetch_candles(pair)
             df = compute_indicators(df)
+            df = compute_ml_features(df)
             result = generate_signal(df)
             all_signals[pair] = result
             print(f"{pair:10s} {result['signal']:5s} conf={result['confidence']:.2f} price={result['price']}")
