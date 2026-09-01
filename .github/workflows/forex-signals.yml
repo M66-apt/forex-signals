@@ -2,12 +2,22 @@ name: Update forex signals
 
 on:
   schedule:
-    # ทุก 15 นาที (เวลา UTC) — GitHub อาจดีเลย์เล็กน้อยตามคิวจริง
-    - cron: "*/15 * * * *"
+    # ทุก 30 นาที — จำนวนนี้คำนวณมาจาก 14 คู่เงิน x 48 รอบ/วัน = 672 requests/วัน
+    # ยังอยู่ในโควตาฟรีของ Twelve Data (800/วัน) ถ้าลดคู่เงินลงจะเปลี่ยนเป็น */15 ได้
+    # (ดูรายละเอียดใน forex_signals.py และ README.md)
+    - cron: "*/30 * * * *"
   workflow_dispatch: {}   # ปุ่มกดรันเองได้จากแท็บ Actions
 
 permissions:
-  contents: write   # ให้ workflow commit ไฟล์ signals.json กลับเข้า repo ได้
+  contents: write
+
+# Both this workflow and train-model.yml hit the same Twelve Data API key.
+# This concurrency group makes GitHub Actions queue one behind the other
+# instead of letting them run at the same time and fight over the shared
+# per-minute rate limit (which is what caused repeated 429 errors).
+concurrency:
+  group: twelvedata-api-quota
+  cancel-in-progress: false   # ให้ workflow commit ไฟล์ signals.json กลับเข้า repo ได้
 
 jobs:
   update-signals:
@@ -29,6 +39,7 @@ jobs:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PYTHONUNBUFFERED: "1"   # stream log output live instead of only showing it at exit
         run: python forex_signals.py --once
 
       - name: Commit updated signals.json
