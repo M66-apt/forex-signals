@@ -56,7 +56,10 @@ META_PATH = os.path.join(ML_DIR, "model_meta.json")
 # roughly 52 calendar days in a single request; older history accumulates
 # across repeated runs via the on-disk cache below.
 TRAIN_OUTPUT_SIZE = 5000
-REQUEST_SPACING_SECONDS = 8  # same free-tier rate limit as forex_signals.py
+# Wider spacing than forex_signals.py's 8s — training makes 14 back-to-back
+# large requests, so it leaves more headroom in case the 30-min signal-update
+# cron happens to overlap and shares the same per-minute rate limit.
+REQUEST_SPACING_SECONDS = 12
 
 # How many candles ahead we're predicting the direction of.
 # 4 candles at 15min interval = 1 hour ahead.
