@@ -1,0 +1,125 @@
+{
+  "trained_at": "2026-09-07T08:09:33.445947",
+  "feature_columns": [
+    "rsi14",
+    "stoch_k",
+    "stoch_d",
+    "adx14",
+    "macd_hist_norm",
+    "ema_spread_norm",
+    "bb_position",
+    "roc_1",
+    "roc_4",
+    "roc_8",
+    "atr14_pct"
+  ],
+  "horizon_candles": 4,
+  "interval": "15min",
+  "pairs": [
+    "EUR/USD",
+    "GBP/USD",
+    "USD/JPY",
+    "USD/CHF",
+    "AUD/USD",
+    "USD/CAD",
+    "NZD/USD",
+    "EUR/GBP",
+    "EUR/JPY",
+    "GBP/JPY",
+    "AUD/JPY",
+    "EUR/AUD",
+    "GBP/AUD",
+    "CHF/JPY"
+  ],
+  "n_train": 55734,
+  "n_test": 13944,
+  "test_accuracy": 0.5492,
+  "test_baseline_accuracy": 0.5213,
+  "test_roc_auc": 0.5775,
+  "data_range": {
+    "EUR/USD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "GBP/USD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "USD/JPY": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "USD/CHF": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "AUD/USD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "USD/CAD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "NZD/USD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "EUR/GBP": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "EUR/JPY": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "GBP/JPY": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "AUD/JPY": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "EUR/AUD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "GBP/AUD": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    },
+    "CHF/JPY": {
+      "from": "2026-07-17T16:15:00",
+      "to": "2026-09-07T18:00:00",
+      "n_candles_cached": 5000,
+      "n_usable_rows": 4977
+    }
+  }
+}
