@@ -1,37 +1,29 @@
 {
   "EUR/USD": {
     "signal": "HOLD",
-    "score": -2.0,
-    "confidence": 0.4,
+    "score": -0.5,
+    "confidence": 0.1,
     "trending": false,
-    "adx14": 13.6,
+    "adx14": 14.3,
     "reasons": [
-      "EMA9 เพิ่งตัดลงใต้ EMA21 (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)",
-      "MACD histogram เพิ่งกลับเป็นลบ"
+      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)"
     ],
-    "price": 1.16321,
-    "rsi14": 42.37,
-    "stoch_k": 11.5,
-    "ema9": 1.16349,
-    "ema21": 1.1635,
-    "macd_hist": -2.1e-05,
-    "time": "2026-09-10T10:15:00",
+    "price": 1.16312,
+    "rsi14": 40.67,
+    "stoch_k": 12.4,
+    "ema9": 1.16342,
+    "ema21": 1.16347,
+    "macd_hist": -4.2e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.565,
+      "probability_up": 0.552,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 1.1633,
-        "high": 1.16338,
-        "low": 1.16309,
-        "close": 1.1632
-      },
       {
         "time": 1788965100,
         "open": 1.16316,
@@ -583,43 +575,42 @@
         "open": 1.1634,
         "high": 1.16345,
         "low": 1.16316,
-        "close": 1.16321
+        "close": 1.16319
+      },
+      {
+        "time": 1789036200,
+        "open": 1.16322,
+        "high": 1.16327,
+        "low": 1.16301,
+        "close": 1.16312
       }
     ]
   },
   "GBP/USD": {
     "signal": "HOLD",
-    "score": -2.0,
-    "confidence": 0.4,
+    "score": -0.5,
+    "confidence": 0.1,
     "trending": false,
-    "adx14": 11.5,
+    "adx14": 12.1,
     "reasons": [
-      "EMA9 เพิ่งตัดลงใต้ EMA21 (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)",
-      "MACD histogram เพิ่งกลับเป็นลบ"
+      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)"
     ],
-    "price": 1.35468,
-    "rsi14": 43.4,
-    "stoch_k": 22.6,
-    "ema9": 1.35496,
-    "ema21": 1.35498,
-    "macd_hist": -5e-06,
-    "time": "2026-09-10T10:15:00",
+    "price": 1.35473,
+    "rsi14": 44.55,
+    "stoch_k": 28.6,
+    "ema9": 1.35492,
+    "ema21": 1.35496,
+    "macd_hist": -1.7e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.556,
+      "probability_up": 0.518,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 1.35489,
-        "high": 1.35498,
-        "low": 1.35465,
-        "close": 1.35478
-      },
       {
         "time": 1788965100,
         "open": 1.35473,
@@ -1170,44 +1161,43 @@
         "time": 1789035300,
         "open": 1.35488,
         "high": 1.3549,
-        "low": 1.35465,
-        "close": 1.35468
+        "low": 1.35463,
+        "close": 1.3547
+      },
+      {
+        "time": 1789036200,
+        "open": 1.35469,
+        "high": 1.35484,
+        "low": 1.35449,
+        "close": 1.35473
       }
     ]
   },
   "USD/JPY": {
     "signal": "HOLD",
-    "score": 0.5,
-    "confidence": 0.1,
+    "score": 1.0,
+    "confidence": 0.2,
     "trending": false,
-    "adx14": 17.7,
+    "adx14": 18.1,
     "reasons": [
-      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)",
-      "MACD histogram เพิ่งกลับเป็นบวก"
+      "EMA9 เพิ่งตัดขึ้นเหนือ EMA21ᐧ (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
     ],
-    "price": 153.62269,
-    "rsi14": 58.01,
-    "stoch_k": 93.4,
-    "ema9": 153.50169,
-    "ema21": 153.50469,
-    "macd_hist": 0.007437,
-    "time": "2026-09-10T10:15:00",
+    "price": 153.67391,
+    "rsi14": 60.65,
+    "stoch_k": 93.9,
+    "ema9": 153.5359,
+    "ema21": 153.51995,
+    "macd_hist": 0.017375,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.514,
+      "probability_up": 0.549,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 153.3232,
-        "high": 153.44077,
-        "low": 153.30762,
-        "close": 153.40626
-      },
       {
         "time": 1788965100,
         "open": 153.41312,
@@ -1757,45 +1747,44 @@
       {
         "time": 1789035300,
         "open": 153.52025,
-        "high": 153.63173,
+        "high": 153.6362,
         "low": 153.52025,
-        "close": 153.62269
+        "close": 153.62125
+      },
+      {
+        "time": 1789036200,
+        "open": 153.594,
+        "high": 153.6973,
+        "low": 153.594,
+        "close": 153.67391
       }
     ]
   },
   "USD/CHF": {
     "signal": "HOLD",
-    "score": 1.5,
-    "confidence": 0.3,
+    "score": 0.5,
+    "confidence": 0.1,
     "trending": false,
     "adx14": 17.4,
     "reasons": [
-      "EMA9 อยู่เหนือ EMA21 (เทรนด์ระยะสั้นเป็นขาขึ้น)",
-      "MACD histogram เพิ่งกลับเป็นบวก"
+      "EMA9 อยู่เหนือ EMA21 (เทรนด์ระยะสั้นเป็นขาขึ้น)"
     ],
-    "price": 0.81024,
-    "rsi14": 59.13,
-    "stoch_k": 84.6,
-    "ema9": 0.80993,
-    "ema21": 0.80988,
-    "macd_hist": 5e-06,
-    "time": "2026-09-10T10:15:00",
+    "price": 0.81017,
+    "rsi14": 57.41,
+    "stoch_k": 78.9,
+    "ema9": 0.80997,
+    "ema21": 0.80991,
+    "macd_hist": 1.5e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.473,
+      "probability_up": 0.515,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 0.80877,
-        "high": 0.80901,
-        "low": 0.80875,
-        "close": 0.80897
-      },
       {
         "time": 1788965100,
         "open": 0.80897,
@@ -2345,9 +2334,16 @@
       {
         "time": 1789035300,
         "open": 0.81016,
-        "high": 0.81025,
+        "high": 0.81033,
         "low": 0.80988,
-        "close": 0.81024
+        "close": 0.81021
+      },
+      {
+        "time": 1789036200,
+        "open": 0.81023,
+        "high": 0.81035,
+        "low": 0.81,
+        "close": 0.81017
       }
     ]
   },
@@ -2356,33 +2352,26 @@
     "score": 0.5,
     "confidence": 0.1,
     "trending": false,
-    "adx14": 8.8,
+    "adx14": 9.6,
     "reasons": [
       "EMA9 อยู่เหนือ EMA21 (เทรนด์ระยะสั้นเป็นขาขึ้น)"
     ],
-    "price": 0.72193,
-    "rsi14": 49.58,
-    "stoch_k": 63.6,
-    "ema9": 0.722,
-    "ema21": 0.72194,
-    "macd_hist": 4.5e-05,
-    "time": "2026-09-10T10:15:00",
+    "price": 0.72176,
+    "rsi14": 45.75,
+    "stoch_k": 47.7,
+    "ema9": 0.72192,
+    "ema21": 0.72191,
+    "macd_hist": 1.5e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.584,
+      "probability_up": 0.556,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 0.72262,
-        "high": 0.72267,
-        "low": 0.72242,
-        "close": 0.72261
-      },
       {
         "time": 1788965100,
         "open": 0.72258,
@@ -2933,43 +2922,43 @@
         "time": 1789035300,
         "open": 0.72219,
         "high": 0.72219,
-        "low": 0.7219,
-        "close": 0.72193
+        "low": 0.72176,
+        "close": 0.72177
+      },
+      {
+        "time": 1789036200,
+        "open": 0.72178,
+        "high": 0.72181,
+        "low": 0.72159,
+        "close": 0.72176
       }
     ]
   },
   "USD/CAD": {
     "signal": "HOLD",
-    "score": 1.0,
-    "confidence": 0.2,
+    "score": 0.5,
+    "confidence": 0.1,
     "trending": false,
-    "adx14": 17.3,
+    "adx14": 17.7,
     "reasons": [
-      "EMA9 เพิ่งตัดขึ้นเหนือ EMA21ᐧ (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
+      "EMA9 อยู่เหนือ EMA21 (เทรนด์ระยะสั้นเป็นขาขึ้น)"
     ],
-    "price": 1.38066,
-    "rsi14": 58.39,
-    "stoch_k": 75.8,
-    "ema9": 1.3804,
-    "ema21": 1.38037,
-    "macd_hist": -1.2e-05,
-    "time": "2026-09-10T10:15:00",
+    "price": 1.38064,
+    "rsi14": 58.07,
+    "stoch_k": 72.2,
+    "ema9": 1.38043,
+    "ema21": 1.38038,
+    "macd_hist": -0.0,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.381,
+      "probability_up": 0.434,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 1.37731,
-        "high": 1.37755,
-        "low": 1.37728,
-        "close": 1.37749
-      },
       {
         "time": 1788965100,
         "open": 1.37749,
@@ -3519,9 +3508,16 @@
       {
         "time": 1789035300,
         "open": 1.38061,
-        "high": 1.38067,
+        "high": 1.38077,
         "low": 1.38043,
-        "close": 1.38066
+        "close": 1.38057
+      },
+      {
+        "time": 1789036200,
+        "open": 1.38064,
+        "high": 1.38091,
+        "low": 1.38044,
+        "close": 1.38064
       }
     ]
   },
@@ -3530,33 +3526,26 @@
     "score": 0.5,
     "confidence": 0.1,
     "trending": false,
-    "adx14": 14.7,
+    "adx14": 14.9,
     "reasons": [
       "EMA9 อยู่เหนือ EMA21 (เทรนด์ระยะสั้นเป็นขาขึ้น)"
     ],
-    "price": 0.58441,
-    "rsi14": 57.17,
-    "stoch_k": 78.3,
-    "ema9": 0.58431,
-    "ema21": 0.58418,
-    "macd_hist": 8e-05,
-    "time": "2026-09-10T10:15:00",
+    "price": 0.58463,
+    "rsi14": 62.27,
+    "stoch_k": 87.2,
+    "ema9": 0.58439,
+    "ema21": 0.58423,
+    "macd_hist": 8.7e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.49,
+      "probability_up": 0.518,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 0.58547,
-        "high": 0.58558,
-        "low": 0.58533,
-        "close": 0.58538
-      },
       {
         "time": 1788965100,
         "open": 0.58536,
@@ -4106,44 +4095,44 @@
       {
         "time": 1789035300,
         "open": 0.58429,
-        "high": 0.58463,
-        "low": 0.58429,
-        "close": 0.58441
+        "high": 0.58482,
+        "low": 0.58423,
+        "close": 0.58452
+      },
+      {
+        "time": 1789036200,
+        "open": 0.58457,
+        "high": 0.58468,
+        "low": 0.58423,
+        "close": 0.58463
       }
     ]
   },
   "EUR/GBP": {
     "signal": "HOLD",
-    "score": -1.0,
-    "confidence": 0.2,
+    "score": -0.5,
+    "confidence": 0.1,
     "trending": false,
-    "adx14": 12.6,
+    "adx14": 12.8,
     "reasons": [
-      "EMA9 เพิ่งตัดลงใต้ EMA21 (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
+      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)"
     ],
-    "price": 0.85864,
-    "rsi14": 47.31,
-    "stoch_k": 28.8,
-    "ema9": 0.85869,
-    "ema21": 0.8587,
-    "macd_hist": -1.5e-05,
-    "time": "2026-09-10T10:15:00",
+    "price": 0.85858,
+    "rsi14": 44.75,
+    "stoch_k": 11.1,
+    "ema9": 0.85867,
+    "ema21": 0.85868,
+    "macd_hist": -2e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.543,
+      "probability_up": 0.585,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 0.8586,
-        "high": 0.85866,
-        "low": 0.85853,
-        "close": 0.85857
-      },
       {
         "time": 1788965100,
         "open": 0.85859,
@@ -4695,43 +4684,42 @@
         "open": 0.85867,
         "high": 0.85874,
         "low": 0.85855,
-        "close": 0.85864
+        "close": 0.85863
+      },
+      {
+        "time": 1789036200,
+        "open": 0.85866,
+        "high": 0.85869,
+        "low": 0.85854,
+        "close": 0.85858
       }
     ]
   },
   "EUR/JPY": {
     "signal": "HOLD",
-    "score": 0.5,
-    "confidence": 0.1,
+    "score": 1.0,
+    "confidence": 0.2,
     "trending": false,
-    "adx14": 15.5,
+    "adx14": 16.2,
     "reasons": [
-      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)",
-      "MACD histogram เพิ่งกลับเป็นบวก"
+      "EMA9 เพิ่งตัดขึ้นเหนือ EMA21ᐧ (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
     ],
-    "price": 178.70739,
-    "rsi14": 57.14,
-    "stoch_k": 75.7,
-    "ema9": 178.59956,
-    "ema21": 178.604,
-    "macd_hist": 0.005992,
-    "time": "2026-09-10T10:15:00",
+    "price": 178.74453,
+    "rsi14": 59.4,
+    "stoch_k": 85.5,
+    "ema9": 178.61971,
+    "ema21": 178.61221,
+    "macd_hist": 0.012527,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.515,
+      "probability_up": 0.536,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 178.36186,
-        "high": 178.47695,
-        "low": 178.34033,
-        "close": 178.43722
-      },
       {
         "time": 1788965100,
         "open": 178.44428,
@@ -5283,43 +5271,42 @@
         "open": 178.60505,
         "high": 178.71522,
         "low": 178.59877,
-        "close": 178.70739
+        "close": 178.65213
+      },
+      {
+        "time": 1789036200,
+        "open": 178.66645,
+        "high": 178.76144,
+        "low": 178.66645,
+        "close": 178.74453
       }
     ]
   },
   "GBP/JPY": {
     "signal": "HOLD",
-    "score": 0.5,
-    "confidence": 0.1,
+    "score": 1.0,
+    "confidence": 0.2,
     "trending": false,
-    "adx14": 16.4,
+    "adx14": 17.4,
     "reasons": [
-      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)",
-      "MACD histogram เพิ่งกลับเป็นบวก"
+      "EMA9 เพิ่งตัดขึ้นเหนือ EMA21ᐧ (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
     ],
-    "price": 208.11748,
-    "rsi14": 56.95,
-    "stoch_k": 80.7,
-    "ema9": 207.99099,
-    "ema21": 207.9957,
-    "macd_hist": 0.010501,
-    "time": "2026-09-10T10:15:00",
+    "price": 208.18683,
+    "rsi14": 60.12,
+    "stoch_k": 97.0,
+    "ema9": 208.02808,
+    "ema21": 208.012,
+    "macd_hist": 0.021175,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.523,
+      "probability_up": 0.547,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 207.73682,
-        "high": 207.86534,
-        "low": 207.70857,
-        "close": 207.82356
-      },
       {
         "time": 1788965100,
         "open": 207.8301,
@@ -5871,42 +5858,42 @@
         "open": 207.99903,
         "high": 208.13923,
         "low": 207.99108,
-        "close": 208.11748
+        "close": 208.10448
+      },
+      {
+        "time": 1789036200,
+        "open": 208.08003,
+        "high": 208.19704,
+        "low": 208.08003,
+        "close": 208.18683
       }
     ]
   },
   "AUD/JPY": {
     "signal": "HOLD",
-    "score": 1.0,
-    "confidence": 0.2,
+    "score": 0.5,
+    "confidence": 0.1,
     "trending": false,
-    "adx14": 15.7,
+    "adx14": 16.4,
     "reasons": [
-      "EMA9 เพิ่งตัดขึ้นเหนือ EMA21ᐧ (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
+      "EMA9 อยู่เหนือ EMA21 (เทรนด์ระยะสั้นเป็นขาขึ้น)"
     ],
-    "price": 110.91027,
-    "rsi14": 59.07,
-    "stoch_k": 89.0,
-    "ema9": 110.83008,
-    "ema21": 110.82195,
-    "macd_hist": 0.013042,
-    "time": "2026-09-10T10:15:00",
+    "price": 110.91475,
+    "rsi14": 59.59,
+    "stoch_k": 90.7,
+    "ema9": 110.84146,
+    "ema21": 110.82751,
+    "macd_hist": 0.014897,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.549,
+      "probability_up": 0.538,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 110.79493,
-        "high": 110.86768,
-        "low": 110.7682,
-        "close": 110.84797
-      },
       {
         "time": 1788965100,
         "open": 110.85503,
@@ -6457,8 +6444,15 @@
         "time": 1789035300,
         "open": 110.86879,
         "high": 110.91941,
-        "low": 110.85363,
-        "close": 110.91027
+        "low": 110.85123,
+        "close": 110.87553
+      },
+      {
+        "time": 1789036200,
+        "open": 110.85855,
+        "high": 110.91912,
+        "low": 110.85033,
+        "close": 110.91475
       }
     ]
   },
@@ -6467,33 +6461,26 @@
     "score": -0.5,
     "confidence": 0.1,
     "trending": false,
-    "adx14": 15.4,
+    "adx14": 14.6,
     "reasons": [
       "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)"
     ],
-    "price": 1.61133,
-    "rsi14": 44.81,
-    "stoch_k": 29.5,
-    "ema9": 1.61152,
+    "price": 1.6115,
+    "rsi14": 47.38,
+    "stoch_k": 36.2,
+    "ema9": 1.61155,
     "ema21": 1.61167,
-    "macd_hist": -0.000129,
-    "time": "2026-09-10T10:15:00",
+    "macd_hist": -9.8e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.533,
+      "probability_up": 0.518,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 1.60985,
-        "high": 1.61019,
-        "low": 1.60962,
-        "close": 1.6097
-      },
       {
         "time": 1788965100,
         "open": 1.60973,
@@ -7043,9 +7030,16 @@
       {
         "time": 1789035300,
         "open": 1.61095,
-        "high": 1.61138,
+        "high": 1.61168,
         "low": 1.61093,
-        "close": 1.61133
+        "close": 1.61153
+      },
+      {
+        "time": 1789036200,
+        "open": 1.6116,
+        "high": 1.61177,
+        "low": 1.61147,
+        "close": 1.6115
       }
     ]
   },
@@ -7054,33 +7048,26 @@
     "score": -0.5,
     "confidence": 0.1,
     "trending": false,
-    "adx14": 13.1,
+    "adx14": 12.0,
     "reasons": [
       "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)"
     ],
-    "price": 1.87655,
-    "rsi14": 45.98,
-    "stoch_k": 35.0,
-    "ema9": 1.87672,
-    "ema21": 1.87689,
-    "macd_hist": -0.000122,
-    "time": "2026-09-10T10:15:00",
+    "price": 1.87702,
+    "rsi14": 51.05,
+    "stoch_k": 57.8,
+    "ema9": 1.87684,
+    "ema21": 1.87693,
+    "macd_hist": -6.4e-05,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.522,
+      "probability_up": 0.458,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 1.87498,
-        "high": 1.87537,
-        "low": 1.87473,
-        "close": 1.87484
-      },
       {
         "time": 1788965100,
         "open": 1.87484,
@@ -7630,44 +7617,44 @@
       {
         "time": 1789035300,
         "open": 1.87609,
-        "high": 1.87658,
+        "high": 1.87699,
         "low": 1.87609,
-        "close": 1.87655
+        "close": 1.87694
+      },
+      {
+        "time": 1789036200,
+        "open": 1.87687,
+        "high": 1.87712,
+        "low": 1.8768,
+        "close": 1.87702
       }
     ]
   },
   "CHF/JPY": {
     "signal": "HOLD",
-    "score": -0.5,
-    "confidence": 0.1,
+    "score": 1.0,
+    "confidence": 0.2,
     "trending": false,
-    "adx14": 11.5,
+    "adx14": 12.0,
     "reasons": [
-      "EMA9 อยู่ใต้ EMA21 (เทรนด์ระยะสั้นเป็นขาลง)"
+      "EMA9 เพิ่งตัดขึ้นเหนือ EMA21ᐧ (ตลาดไม่ได้เป็นเทรนด์ชัด น้ำหนักลดลง)"
     ],
-    "price": 189.61198,
-    "rsi14": 54.27,
-    "stoch_k": 55.0,
-    "ema9": 189.53211,
-    "ema21": 189.54323,
-    "macd_hist": 0.009944,
-    "time": "2026-09-10T10:15:00",
+    "price": 189.68775,
+    "rsi14": 58.88,
+    "stoch_k": 80.5,
+    "ema9": 189.56003,
+    "ema21": 189.55471,
+    "macd_hist": 0.01834,
+    "time": "2026-09-10T10:30:00",
     "ml": {
       "available": true,
-      "probability_up": 0.508,
+      "probability_up": 0.556,
       "horizon_candles": 4,
       "trained_at": "2026-09-07T08:09:33.445947",
       "test_accuracy": 0.5492,
       "test_baseline_accuracy": 0.5213
     },
     "candles": [
-      {
-        "time": 1788964200,
-        "open": 189.57617,
-        "high": 189.67905,
-        "low": 189.55432,
-        "close": 189.6316
-      },
       {
         "time": 1788965100,
         "open": 189.63693,
@@ -8219,7 +8206,14 @@
         "open": 189.49304,
         "high": 189.629,
         "low": 189.49304,
-        "close": 189.61198
+        "close": 189.59193
+      },
+      {
+        "time": 1789036200,
+        "open": 189.57534,
+        "high": 189.69482,
+        "low": 189.57534,
+        "close": 189.68775
       }
     ]
   }
