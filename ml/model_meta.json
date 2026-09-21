@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-09-14T08:46:56.252802",
+  "trained_at": "2026-09-21T08:48:12.986472",
   "feature_columns": [
     "rsi14",
     "stoch_k",
@@ -31,95 +31,95 @@
     "GBP/AUD",
     "CHF/JPY"
   ],
-  "n_train": 63284,
-  "n_test": 15834,
-  "test_accuracy": 0.545,
-  "test_baseline_accuracy": 0.521,
-  "test_roc_auc": 0.5754,
+  "n_train": 70822,
+  "n_test": 17710,
+  "test_accuracy": 0.5521,
+  "test_baseline_accuracy": 0.5099,
+  "test_roc_auc": 0.5827,
   "data_range": {
     "EUR/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:30:00",
+      "n_candles_cached": 6346,
+      "n_usable_rows": 6323
     },
     "GBP/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:30:00",
+      "n_candles_cached": 6346,
+      "n_usable_rows": 6323
     },
     "USD/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:30:00",
+      "n_candles_cached": 6346,
+      "n_usable_rows": 6323
     },
     "USD/CHF": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:30:00",
+      "n_candles_cached": 6346,
+      "n_usable_rows": 6323
     },
     "AUD/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "USD/CAD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "NZD/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "EUR/GBP": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "EUR/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "GBP/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:30:00",
-      "n_candles_cached": 5674,
-      "n_usable_rows": 5651
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "AUD/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:45:00",
-      "n_candles_cached": 5675,
-      "n_usable_rows": 5652
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "EUR/AUD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:45:00",
-      "n_candles_cached": 5675,
-      "n_usable_rows": 5652
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "GBP/AUD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:45:00",
-      "n_candles_cached": 5675,
-      "n_usable_rows": 5652
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     },
     "CHF/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-09-14T18:45:00",
-      "n_candles_cached": 5675,
-      "n_usable_rows": 5652
+      "to": "2026-09-21T18:45:00",
+      "n_candles_cached": 6347,
+      "n_usable_rows": 6324
     }
   }
 }
