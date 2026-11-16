@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-11-09T11:13:07.819898",
+  "trained_at": "2026-11-16T10:54:25.799053",
   "feature_columns": [
     "rsi14",
     "stoch_k",
@@ -31,95 +31,95 @@
     "GBP/AUD",
     "CHF/JPY"
   ],
-  "n_train": 123606,
-  "n_test": 30912,
-  "test_accuracy": 0.5539,
-  "test_baseline_accuracy": 0.5081,
-  "test_roc_auc": 0.5834,
+  "n_train": 131124,
+  "n_test": 32788,
+  "test_accuracy": 0.5601,
+  "test_baseline_accuracy": 0.509,
+  "test_roc_auc": 0.5912,
   "data_range": {
     "EUR/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "GBP/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "USD/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "USD/CHF": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "AUD/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "USD/CAD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "NZD/USD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "EUR/GBP": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "EUR/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "GBP/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "AUD/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "EUR/AUD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "GBP/AUD": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     },
     "CHF/JPY": {
       "from": "2026-07-17T16:15:00",
-      "to": "2026-11-09T22:00:00",
-      "n_candles_cached": 11060,
-      "n_usable_rows": 11037
+      "to": "2026-11-16T21:45:00",
+      "n_candles_cached": 11731,
+      "n_usable_rows": 11708
     }
   }
 }
